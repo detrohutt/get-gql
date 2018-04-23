@@ -1,0 +1,5 @@
+{
+  "hooks": {
+    "pre-commit": "lint-staged && echo 'Running tsc...' && tsc"
+  }
+}

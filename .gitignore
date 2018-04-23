@@ -1,0 +1,12 @@
+node_modules
+dist
+*.log*
+
+# Most files should be .ts
+*.mjs
+*.js
+
+# Exceptions
+!jest-puppeteer.config.js
+!rollup.config.js
+!module.mjs

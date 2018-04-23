@@ -1,0 +1,11 @@
+query first {
+  one
+}
+
+mutation second {
+  two
+}
+
+subscription third {
+  three
+}

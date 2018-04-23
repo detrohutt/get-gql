@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "target": "es2015",
+    "outDir": "./dist/esm",
+    "declaration": true,
+    "declarationDir": "dist"
+  },
+  "include": ["src/**/*"]
+}

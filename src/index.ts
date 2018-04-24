@@ -20,7 +20,7 @@ export function getGql(filepath: string, { resolve = defaultResolve, nowrap = tr
   return nowrap && Object.keys(docs).length <= 2 ? docs.default : docs;
 }
 
-function defaultResolve(src: string, file: string) {
+export function defaultResolve(src: string, file: string) {
   return pathResolve(dirname(file), src);
 }
 

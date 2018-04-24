@@ -1,4 +1,4 @@
-import { DocumentNode, FragmentDefinitionNode } from 'graphql';
+import { DocumentNode, ExecutableDefinitionNode, FragmentDefinitionNode } from 'graphql';
 
 import { readFileSync } from 'fs';
 import { resolve as pathResolve, isAbsolute, join, dirname } from 'path';
@@ -13,11 +13,16 @@ export function getGql(filepath: string, { resolve = defaultResolve, nowrap = tr
   filepath = isAbsolute(filepath) ? filepath : join(callerDirname(), filepath);
   const source = readFileSync(filepath).toString();
 
-  // If the file doesn't contain ops return raw text, else parse  and return docs object.
+  // If the file doesn't contain any operations just return the raw text.
   if (isSchemaLike(source)) return source;
 
-  const docs = createDocPerOp(processDoc(createDocWorker(source, filepath, resolve)));
-  return nowrap && Object.keys(docs).length <= 2 ? docs.default : docs;
+  // Otherwise, parse into a GraphQL AST object.
+  const doc = processDoc(createDocWorker(source, filepath, resolve));
+
+  // Separate each op from the original doc into its own full doc with its dependencies.
+  const docMap = createDocMap(doc);
+
+  return nowrap && Object.keys(docMap).length <= 2 ? docMap.default : docMap;
 }
 
 export function defaultResolve(src: string, file: string) {
@@ -108,7 +113,12 @@ function processDoc(doc: DocWorker) {
   return doc.ast;
 }
 
-function createDocPerOp(doc: any): Record<string, DocumentNode> {
+function createDocMap(doc: DocumentNode): Record<string, DocumentNode> {
+  if (doc.definitions.length === 1) {
+    const { name } = <ExecutableDefinitionNode>doc.definitions[0];
+    return name ? { [name.value]: doc, default: doc } : { default: doc };
+  }
+
   const docMap = separateOperations(doc);
   // Set the first/only export as the default export
   return { ...docMap, default: docMap[Object.keys(docMap)[0]] };

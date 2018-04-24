@@ -23,6 +23,11 @@ describe('parse client-side graphql file at runtime', () => {
     expect(typeof result).toBe('object');
   });
 
+  test('single fragment', () => {
+    const result = <DocMap>getGql('../__fixtures__/graphql/fragment.graphql');
+    expect(result.kind).toBe('Document');
+  });
+
   test('single named query', () => {
     const result = <DocMap>getGql('../__fixtures__/graphql/named.graphql');
     expect(result.kind).toBe('Document');

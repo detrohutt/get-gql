@@ -9,7 +9,10 @@ import gql from 'graphql-tag';
 
 const newlinePattern = /(\r\n|\r|\n)+/;
 
-export function getGql(filepath: string, { resolve = defaultResolve, nowrap = true } = {}) {
+export function getGql(
+  filepath: string,
+  { resolve = defaultResolve, wrapSingleExport = false } = {}
+) {
   filepath = isAbsolute(filepath) ? filepath : join(callerDirname(), filepath);
   const source = readFileSync(filepath).toString();
 
@@ -22,7 +25,7 @@ export function getGql(filepath: string, { resolve = defaultResolve, nowrap = tr
   // Separate each op from the original doc into its own full doc with its dependencies.
   const docMap = createDocMap(doc);
 
-  return nowrap && Object.keys(docMap).length <= 2 ? docMap.default : docMap;
+  return wrapSingleExport || Object.keys(docMap).length > 2 ? docMap : docMap.default;
 }
 
 export function defaultResolve(src: string, file: string) {

@@ -33,8 +33,10 @@ describe('parse client-side graphql file at runtime', () => {
     expect(result.kind).toBe('Document');
   });
 
-  test('single named query with { nowrap: false }', () => {
-    const { named } = <DocMap>getGql('../__fixtures__/graphql/named.graphql', { nowrap: false });
+  test('single named query with { wrapSingleExport: true }', () => {
+    const { named } = <DocMap>getGql('../__fixtures__/graphql/named.graphql', {
+      wrapSingleExport: true
+    });
     expect(named.kind).toBe('Document');
   });
 

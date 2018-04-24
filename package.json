@@ -1,5 +1,5 @@
 {
-  "name": "universal-fs",
+  "name": "get-gql",
   "version": "1.0.0-alpha.0",
   "main": "dist/index",
   "author": "detrohutt@gmail.com",
@@ -60,6 +60,6 @@
   },
   "files": ["dist/index.*"],
   "peerDependencies": {
-    "graphql": "^0.13.2"
+    "graphql": ">=0.9.6"
   }
 }

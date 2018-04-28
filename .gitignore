@@ -10,3 +10,4 @@ dist
 !jest-puppeteer.config.js
 !rollup.config.js
 !module.mjs
+!mjstests.mjs

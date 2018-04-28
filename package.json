@@ -29,6 +29,7 @@
     "@types/node": "^9.6.6",
     "@types/puppeteer": "^1.2.1",
     "caller-dirname": "^2.0.0",
+    "core-js": "^2.5.5",
     "cors": "^2.8.4",
     "dedent": "^0.7.0",
     "eslint": "^4.19.1",

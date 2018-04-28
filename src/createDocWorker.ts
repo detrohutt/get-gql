@@ -1,6 +1,6 @@
 import { DocumentNode, FragmentDefinitionNode } from 'graphql';
 
-import { readFileSync } from 'fs';
+import { readFile } from 'universal-fs';
 
 import gql from 'graphql-tag';
 
@@ -9,14 +9,14 @@ import { newlinePattern } from './constants';
 export function createDocWorker(
   source: string,
   filepath: string,
-  resolve: (src: string, file: string) => string
+  resolve: (src: string, file: string) => Promise<string>
 ) {
   let ast: DocumentNode;
   let fragmentDefs: FragmentDefinitionNode[] = [];
 
   return {
-    processFragments() {
-      processFragmentImports(getFragmentImportStatements(source), filepath);
+    async processFragments() {
+      await processFragmentImports(getFragmentImportStatements(source), filepath);
 
       function getFragmentImportStatements(src: string) {
         return src
@@ -25,16 +25,16 @@ export function createDocWorker(
           .filter(line => line.substr(0, 7) === '#import');
       }
 
-      function processFragmentImports(imports: string[], relFile: string) {
-        imports.forEach(statement => {
+      async function processFragmentImports(imports: string[], relFile: string) {
+        for (let statement of imports) {
           const fragmentPath = statement.split(/[\s\n]+/g)[1].slice(1, -1);
-          const absFragmentPath = resolve(fragmentPath, relFile);
-          const fragmentSource = readFileSync(absFragmentPath.replace(/'/g, ''), 'utf8');
+          const absFragmentPath = await resolve(fragmentPath, relFile);
+          const fragmentSource = await readFile(absFragmentPath.replace(/'/g, ''));
           const subFragments = getFragmentImportStatements(fragmentSource);
           if (subFragments.length > 0) processFragmentImports(subFragments, absFragmentPath);
           // prettier-ignore
           fragmentDefs = [...gql`${fragmentSource}`.definitions, ...fragmentDefs]
-        });
+        }
       }
     },
     parse() {
@@ -59,8 +59,8 @@ export function createDocWorker(
     get ast() {
       return ast;
     },
-    processDoc() {
-      this.processFragments();
+    async processDoc() {
+      await this.processFragments();
       this.parse();
       this.dedupeFragments();
       this.makeSourceEnumerable();

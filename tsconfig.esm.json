@@ -1,10 +1,11 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "target": "es2015",
+    "target": "esnext",
     "outDir": "./dist/esm",
     "declaration": true,
     "declarationDir": "dist"
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["src/index.es5.ts"]
 }

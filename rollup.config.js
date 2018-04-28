@@ -3,7 +3,7 @@ import commonjs from 'rollup-plugin-commonjs';
 
 export default [
   {
-    input: 'dist/cjs/index.js',
+    input: 'dist/cjs/index.es5.js',
     experimentalDynamicImport: true,
     output: {
       file: 'dist/index.js',
@@ -19,7 +19,7 @@ export default [
       file: 'dist/index.mjs',
       format: 'es'
     },
-    external: ['fs', 'path', 'graphql-tag'],
+    external: ['fs', 'path', 'caller-dirname', 'graphql-tag'],
     plugins: [resolve({ extensions: ['.mjs', '.js'] })]
   }
 ];
